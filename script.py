@@ -16,7 +16,8 @@ params = {
     "selected_model": "",
     "noise_scale": 0.667,
     "length_scale": 1.0,
-    "noise_w": 0.8,    
+    "noise_w": 0.8,
+    "ignore_asterisk_text": False,    
 }
 
 def load_settings():
@@ -38,6 +39,16 @@ def clean_text(text):
     cleaned_text = cleaned_text.replace('&#x27;', "'").replace('&quot;', '"')
     cleaned_text = cleaned_text.replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>')
     cleaned_text = cleaned_text.replace('&nbsp;', ' ').replace('&copy;', '©').replace('&reg;', '®')
+
+    # Ignorer le texte entre astérisques si l'option est activée
+    if params["ignore_asterisk_text"]:
+        while '*' in cleaned_text:
+            start = cleaned_text.find('*')
+            end = cleaned_text.find('*', start + 1)
+            if start != -1 and end != -1 and start < end:
+                excluded_text = cleaned_text[start:end + 1]
+                cleaned_text = cleaned_text.replace(excluded_text, '')
+
     # Ajoutez d'autres remplacements au besoin
     return cleaned_text
 
@@ -146,6 +157,7 @@ def save_settings():
         "noise_scale": params["noise_scale"],
         "length_scale": params["length_scale"],
         "noise_w": params["noise_w"],
+        "ignore_asterisk_text": params["ignore_asterisk_text"],
     }
 
     with open(settings_file, 'w') as json_file:
@@ -160,6 +172,7 @@ def ui():
         activate = gr.Checkbox(value=params['active'], label='Active extension')
         autoplay = gr.Checkbox(value=params['autoplay'], label='Play TTS automatically')
         show_text = gr.Checkbox(value=params['show_text'], label='Show message text under audio player')
+        ignore_asterisk_checkbox = gr.Checkbox(value=params["ignore_asterisk_text"], label="*Ignore text inside asterisk*")
         
         noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default (0.66)', value=params['noise_scale'])
         length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label='Length Scale : Default (1)', value=params['length_scale'])
@@ -168,6 +181,7 @@ def ui():
         activate.change(lambda x: params.update({'active': x}), activate, None)
         autoplay.change(lambda x: params.update({'autoplay': x}), autoplay, None)
         show_text.change(lambda x: params.update({'show_text': x}), show_text, None)
+        ignore_asterisk_checkbox.change(lambda x: params.update({"ignore_asterisk_text": x}), ignore_asterisk_checkbox, None)
         
         noise_scale_slider.change(lambda x: params.update({'noise_scale': x}), noise_scale_slider, None)
         length_scale_slider.change(lambda x: params.update({'length_scale': x}), length_scale_slider, None)
