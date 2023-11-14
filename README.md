@@ -3,6 +3,9 @@ Fast generation voice - piper oobabooga
 
 This project is a Web user interface (WebUI) for text generation using Gradio and a Piper text-to-speech (TTS) model. The main objective is to provide a user-friendly experience for text generation with audio.
 
+![Mon Image](https://drive.google.com/uc?export=view&id=1TOnHWGWDqHWgNNn6HFOfvEv9egC1z7g-)
+
+
 ## Features
 
 - Enable/Disable:** Enable or disable the TTS extension.
