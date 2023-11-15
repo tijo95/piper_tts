@@ -8,6 +8,8 @@ This project is a Web user interface (WebUI) for text generation using Gradio an
 
 ## Features
 
+- 16/11/2023 -- Speaker ID:** Some model may contain several voices, so to find out which ID to use, refer to the model's JSON file.
+- 16/11/2023 -- Sentence silence:** allows you to specify the duration, in seconds, of silence to be added after each sentence during text-to-speech.
 - Enable/Disable:** Enable or disable the TTS extension.
 - Autoplay:** Choose to automatically read generated text.
 - Text display:** Choose to show or hide generated text.
