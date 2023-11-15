@@ -8,16 +8,16 @@ This project is a Web user interface (WebUI) for text generation using Gradio an
 
 ## Features
 
-- 16/11/2023 -- Speaker ID:** Some model may contain several voices, so to find out which ID to use, refer to the model's JSON file.
-- 16/11/2023 -- Sentence silence:** allows you to specify the duration, in seconds, of silence to be added after each sentence during text-to-speech.
-- Enable/Disable:** Enable or disable the TTS extension.
-- Autoplay:** Choose to automatically read generated text.
-- Text display:** Choose to show or hide generated text.
-- Custom settings:** Adjust audio parameters such as noise, phoneme length and noise width.
-- Template selection:** Choose from different templates available for text generation.
-- WAV save:** Audio files are saved in the `outputs` folder.
-- Save settings:** Save your settings. 
-- Remove WAV:** delete all WAV files from the directory to free up storage space. 
+- 16/11/2023 -- Speaker ID :** Some model may contain several voices, so to find out which ID to use, refer to the model's JSON file.
+- 16/11/2023 -- Sentence silence :** allows you to specify the duration, in seconds, of silence to be added after each sentence during text-to-speech.
+- Enable/Disable :** Enable or disable the TTS extension.
+- Autoplay :** Choose to automatically read generated text.
+- Text display :** Choose to show or hide generated text.
+- Custom settings :** Adjust audio parameters such as noise, phoneme length and noise width.
+- Template selection :** Choose from different templates available for text generation.
+- WAV save :** Audio files are saved in the `outputs` folder.
+- Save settings :** Save your settings. 
+- Remove WAV :** delete all WAV files from the directory to free up storage space. 
 
 ## Saved settings
 
