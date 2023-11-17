@@ -36,7 +36,7 @@ git clone https://github.com/tijo95/win_tts_piper.git
 ```
 
 
-2. download the following windows piper repository: https://github.com/rhasspy/piper/releases/download/2023.9.27-1/piper_windows_amd64.zip
+2. download the following windows piper repository: https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip
 
 Unzip all contents into `win_tts_piper`
 
