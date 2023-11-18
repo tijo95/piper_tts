@@ -14,6 +14,7 @@ params = {
     "active": True,
     "autoplay": True,
     "show_text": True,
+    "quiet": False,
     "selected_model": "",
     "speaker_id": 0,
     "noise_scale": 0.667,
@@ -59,7 +60,7 @@ def clean_text(text):
 def tts(text, output_file):
     cleaned_text = clean_text(text)
     print(f"tts: {cleaned_text} -> {output_file}")
-    
+
     selected_model = params.get('selected_model', '')
     model_path = Path(f'extensions/win_tts_piper/model/{selected_model}')
     
@@ -76,6 +77,7 @@ def tts(text, output_file):
             '--speaker', str(params['speaker_id']),
             '--model', model_path.as_posix(),
             '--output_file', output_file_str,
+            '--quiet' if params['quiet'] else '',
         ],
         stdin=subprocess.PIPE, 
         text=True
@@ -158,6 +160,7 @@ def save_settings():
         "active": params["active"],
         "autoplay": params["autoplay"],
         "show_text": params["show_text"],
+        "quiet": params["quiet"],
         "selected_model": params["selected_model"],
         "speaker_id": params["speaker_id"],
         "noise_scale": params["noise_scale"],
@@ -170,7 +173,6 @@ def save_settings():
     with open(settings_file, 'w') as json_file:
         json.dump(settings, json_file, indent=4)
     
-
 def ui():
     model_folder = Path('extensions/win_tts_piper/model')
 
@@ -180,6 +182,7 @@ def ui():
         autoplay = gr.Checkbox(value=params['autoplay'], label='Play TTS automatically')
         show_text = gr.Checkbox(value=params['show_text'], label='Show message text under audio player')
         ignore_asterisk_checkbox = gr.Checkbox(value=params["ignore_asterisk_text"], label="*Ignore text inside asterisk*")
+        quiet_checkbox = gr.Checkbox(value=False, label='Disable log')
         
         noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default (0.66)', value=params['noise_scale'])
         length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label='Length Scale : Default (1)', value=params['length_scale'])
@@ -190,6 +193,7 @@ def ui():
         autoplay.change(lambda x: params.update({'autoplay': x}), autoplay, None)
         show_text.change(lambda x: params.update({'show_text': x}), show_text, None)
         ignore_asterisk_checkbox.change(lambda x: params.update({"ignore_asterisk_text": x}), ignore_asterisk_checkbox, None)
+        quiet_checkbox.change(lambda x: params.update({'quiet': x}), quiet_checkbox, None)
         
         noise_scale_slider.change(lambda x: params.update({'noise_scale': x}), noise_scale_slider, None)
         length_scale_slider.change(lambda x: params.update({'length_scale': x}), length_scale_slider, None)
@@ -201,12 +205,11 @@ def ui():
         
         speaker_id_input = gr.Number(value=params["speaker_id"], label="Speaker ID : Default (0) See the model JSON file to find out which ID are available for the selected model.")
         speaker_id_input.change(lambda x: params.update({'speaker_id': int(x)}), speaker_id_input, None)
-
         
-        save_button = gr.Button("Save Settings")
-        save_button.click(save_settings, None)
+        with gr.Row():    
+            save_button = gr.Button("Save Settings")
+            save_button.click(save_settings, None)
 
-        remove_directory_button = gr.Button("Remove WAV Directory")
-        remove_directory_button.click(remove_directory, None)
+            remove_directory_button = gr.Button("Remove WAV")
+            remove_directory_button.click(remove_directory, None)
 
-        gr.Row([model_dropdown, remove_directory_button])
