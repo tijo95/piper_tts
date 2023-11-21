@@ -109,7 +109,7 @@ def output_modifier(string, state):
         output_file = Path(f'extensions/win_tts_piper/outputs/{state["character_menu"]}_{int(time.time())}.wav')
         tts(string, output_file)
         autoplay = 'autoplay' if params['autoplay'] else ''
-        html_string = f'<audio src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
+        html_string = f'<audio style="height: 30px;" src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
         if params['show_text']:
             string = f'{html_string}\n\n{string}'
         else:
