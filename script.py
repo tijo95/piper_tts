@@ -14,6 +14,7 @@ params = {
     "active": True,
     "autoplay": True,
     "show_text": True,
+    "ignore_asterisk_text": False,
     "quiet": False,
     "selected_model": "",
     "speaker_id": 0,
@@ -21,7 +22,6 @@ params = {
     "length_scale": 1.0,
     "noise_w": 0.8,
     "sentence_silence": 0.2,
-    "ignore_asterisk_text": False,
 }
 
 def load_settings():
