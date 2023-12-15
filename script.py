@@ -195,7 +195,7 @@ def ui():
         autoplay = gr.Checkbox(value=params['autoplay'], label='Play TTS automatically')
         show_text = gr.Checkbox(value=params['show_text'], label='Show message text under audio player')
         ignore_asterisk_checkbox = gr.Checkbox(value=params["ignore_asterisk_text"], label="*Ignore text inside asterisk*")
-        quiet_checkbox = gr.Checkbox(value=False, label='Disable log')
+        quiet_checkbox = gr.Checkbox(value=params["quiet"], label='Disable log')
         
         noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default (0.66)', value=params['noise_scale'])
         length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label='Length Scale : Default (1)', value=params['length_scale'])
