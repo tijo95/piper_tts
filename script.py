@@ -30,6 +30,7 @@ params = {
     "noise_w": 0.8,
     "sentence_silence": 0.2,
 }
+defaults = params.copy()
 
 def load_settings():
     try:
@@ -197,10 +198,10 @@ def ui():
         ignore_asterisk_checkbox = gr.Checkbox(value=params["ignore_asterisk_text"], label="*Ignore text inside asterisk*")
         quiet_checkbox = gr.Checkbox(value=params["quiet"], label='Disable log')
         
-        noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default (0.66)', value=params['noise_scale'])
-        length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label='Length Scale : Default (1)', value=params['length_scale'])
-        noise_w_slider = gr.Slider(minimum=0.0, maximum=1.0, label='Noise Width : Default (0.8)', value=params['noise_w'])
-        sentence_silence_slider = gr.Slider(minimum=0.0, maximum=1.0, label='Sentence Silence : Default (0.2)', value=params['sentence_silence'])
+        noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default ({defaults["noise_scale"]})', value=params['noise_scale'])
+        length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label=f'Length Scale : Default ({defaults["length_scale"]})', value=params['length_scale'])
+        noise_w_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Width : Default ({defaults["noise_w"]})', value=params['noise_w'])
+        sentence_silence_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Sentence Silence : Default ({defaults["sentence_silence"]})', value=params['sentence_silence'])
         
         activate.change(lambda x: params.update({'active': x}), activate, None)
         autoplay.change(lambda x: params.update({'autoplay': x}), autoplay, None)
@@ -216,7 +217,7 @@ def ui():
         # Use params["selected_model"] as initial drop-down value
         model_dropdown = create_model_dropdown()
         
-        speaker_id_input = gr.Number(value=params["speaker_id"], label="Speaker ID : Default (0) See the model JSON file to find out which ID are available for the selected model.")
+        speaker_id_input = gr.Number(value=params["speaker_id"], label=f'Speaker ID : Default ({defaults["speaker_id"]}) See the model JSON file to find out which ID are available for the selected model.')
         speaker_id_input.change(lambda x: params.update({'speaker_id': int(x)}), speaker_id_input, None)
         
         with gr.Row():    
