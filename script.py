@@ -38,7 +38,7 @@ def load_settings():
 # Load parameters from JSON file at start of script
 load_settings()
 
-piper_path = Path('extensions/piper_tts/piper/piper.exe')
+piper_path = Path('extensions/piper_tts/piper/piper')
 output_folder = Path('extensions/piper_tts/outputs')
 
 def clean_text(text):
