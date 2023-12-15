@@ -10,7 +10,11 @@ from pathlib import Path
 import gradio as gr
 
 
-settings_file = 'extensions/piper_tts/settings.json'
+root_dir = Path(__file__).resolve().parent
+settings_file = root_dir / 'settings.json'
+piper_path = root_dir / 'piper/piper'
+model_folder = root_dir / 'model'
+output_folder = root_dir / 'outputs'
 
 params = {
     "display_name": "Piper TTS",
@@ -37,9 +41,6 @@ def load_settings():
 
 # Load parameters from JSON file at start of script
 load_settings()
-
-piper_path = Path('extensions/piper_tts/piper/piper')
-output_folder = Path('extensions/piper_tts/outputs')
 
 def clean_text(text):
     cleaned_text = text
@@ -78,7 +79,7 @@ def tts(text, output_file):
     print(f"tts: {cleaned_text} -> {output_file}")
 
     selected_model = params.get('selected_model', '')
-    model_path = Path(f'extensions/piper_tts/model/{selected_model}')
+    model_path = model_folder / selected_model
     
     output_file_path = output_folder / output_file
     output_file_str = output_file.as_posix()
@@ -109,7 +110,7 @@ def output_modifier(string, state):
     if string == '':
         string = '*Empty reply, try regenerating*'
     else:
-        output_file = Path(f'extensions/piper_tts/outputs/{state["character_menu"]}_{int(time.time())}.wav')
+        output_file = Path(os.path.relpath(output_folder / f'{state["character_menu"]}_{int(time.time())}.wav'))
         tts(string, output_file)
         autoplay = 'autoplay' if params['autoplay'] else ''
         html_string = f'<audio style="height: 30px;" src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
@@ -131,29 +132,27 @@ def history_modifier(history):
     return history
     
 def remove_directory():
-    directory = Path('extensions/piper_tts/outputs')
-    for file in directory.glob('*.wav'):
+    for file in output_folder.glob('*.wav'):
         file.unlink()    
 
-def custom_update_selected_model(selected_model, model_folder):
+def custom_update_selected_model(selected_model):
     if selected_model:
         model_path = model_folder / selected_model
         params.update({'selected_model': selected_model, 'model_path': model_path})
 
-def create_model_dropdown(model_folder):
+def create_model_dropdown():
     available_models = [model.name for model in model_folder.glob('*.onnx')]
     
     model_dropdown = gr.Dropdown(choices=available_models, label="Choose Model", value=params["selected_model"])
     
     def update_selected_model(selected_model):
-        custom_update_selected_model(selected_model, model_folder)
+        custom_update_selected_model(selected_model)
 
     model_dropdown.change(update_selected_model, model_dropdown, None)
 
     return model_dropdown
     
 def set_initial_model():
-    model_folder = Path('extensions/piper_tts/model')
     available_models = [model.name for model in model_folder.glob('*.onnx')]
 
     load_settings()
@@ -190,8 +189,6 @@ def save_settings():
         json.dump(settings, json_file, indent=4)
     
 def ui():
-    model_folder = Path('extensions/piper_tts/model')
-
     with gr.Accordion(params["display_name"], open=False):
     
         activate = gr.Checkbox(value=params['active'], label='Active extension')
@@ -217,7 +214,7 @@ def ui():
         sentence_silence_slider.change(lambda x: params.update({'sentence_silence': x}), sentence_silence_slider, None)
         
         # Use params["selected_model"] as initial drop-down value
-        model_dropdown = create_model_dropdown(model_folder)
+        model_dropdown = create_model_dropdown()
         
         speaker_id_input = gr.Number(value=params["speaker_id"], label="Speaker ID : Default (0) See the model JSON file to find out which ID are available for the selected model.")
         speaker_id_input.change(lambda x: params.update({'speaker_id': int(x)}), speaker_id_input, None)
