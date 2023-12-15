@@ -21,7 +21,7 @@ params = {
     "length_scale": 1.0,
     "noise_w": 0.8,
     "sentence_silence": 0.2,
-    "ignore_asterisk_text": False,    
+    "ignore_asterisk_text": False,
 }
 
 def load_settings():
@@ -32,7 +32,7 @@ def load_settings():
     except FileNotFoundError:
         pass
 
-# Charge les paramètres depuis le fichier JSON au début du script
+# Load parameters from JSON file at start of script
 load_settings()
 
 piper_path = Path('extensions/piper_tts/piper/piper.exe')
@@ -58,7 +58,7 @@ def clean_text(text):
     cleaned_text = cleaned_text.replace("***", "*").replace("**", "*")
     cleaned_text = re.sub(r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F77F\U0001F780-\U0001F7FF\U0001F800-\U0001F8FF\U0001F900-\U0001F9FF\U0001FA00-\U0001FA6F\U0001FA70-\U0001FAFF\U00002702-\U000027B0\U000024C2-\U0001F251]+", "", cleaned_text)
     
-    # Ignorer le texte entre astérisques si l'option est activée
+    # Ignore text between asterisks if option is enabled
     if params["ignore_asterisk_text"]:
         while '*' in cleaned_text:
             start = cleaned_text.find('*')
@@ -165,7 +165,7 @@ def set_initial_model():
             "show_text": params.get("show_text", True),
         })
 
-# Appelle set_initial_model()
+# Call set_initial_model()
 set_initial_model()
 
 def save_settings():
@@ -213,7 +213,7 @@ def ui():
         noise_w_slider.change(lambda x: params.update({'noise_w': x}), noise_w_slider, None)
         sentence_silence_slider.change(lambda x: params.update({'sentence_silence': x}), sentence_silence_slider, None)
         
-        # Utilise params["selected_model"] comme valeur initiale du menu déroulant
+        # Use params["selected_model"] as initial drop-down value
         model_dropdown = create_model_dropdown(model_folder)
         
         speaker_id_input = gr.Number(value=params["speaker_id"], label="Speaker ID : Default (0) See the model JSON file to find out which ID are available for the selected model.")
