@@ -7,10 +7,10 @@ from modules import shared
 import os
 import re
 
-settings_file = 'extensions/win_tts_piper/settings.json'
+settings_file = 'extensions/piper_tts/settings.json'
 
 params = {
-    "display_name": "Win tts piper",
+    "display_name": "Piper TTS",
     "active": True,
     "autoplay": True,
     "show_text": True,
@@ -35,8 +35,8 @@ def load_settings():
 # Charge les paramètres depuis le fichier JSON au début du script
 load_settings()
 
-piper_path = Path('extensions/win_tts_piper/piper/piper.exe')
-output_folder = Path('extensions/win_tts_piper/outputs')
+piper_path = Path('extensions/piper_tts/piper/piper.exe')
+output_folder = Path('extensions/piper_tts/outputs')
 
 def clean_text(text):
     cleaned_text = text
@@ -75,7 +75,7 @@ def tts(text, output_file):
     print(f"tts: {cleaned_text} -> {output_file}")
 
     selected_model = params.get('selected_model', '')
-    model_path = Path(f'extensions/win_tts_piper/model/{selected_model}')
+    model_path = Path(f'extensions/piper_tts/model/{selected_model}')
     
     output_file_path = output_folder / output_file
     output_file_str = output_file.as_posix()
@@ -106,7 +106,7 @@ def output_modifier(string, state):
     if string == '':
         string = '*Empty reply, try regenerating*'
     else:
-        output_file = Path(f'extensions/win_tts_piper/outputs/{state["character_menu"]}_{int(time.time())}.wav')
+        output_file = Path(f'extensions/piper_tts/outputs/{state["character_menu"]}_{int(time.time())}.wav')
         tts(string, output_file)
         autoplay = 'autoplay' if params['autoplay'] else ''
         html_string = f'<audio style="height: 30px;" src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
@@ -128,7 +128,7 @@ def history_modifier(history):
     return history
     
 def remove_directory():
-    directory = Path('extensions/win_tts_piper/outputs')
+    directory = Path('extensions/piper_tts/outputs')
     for file in directory.glob('*.wav'):
         file.unlink()    
 
@@ -150,7 +150,7 @@ def create_model_dropdown(model_folder):
     return model_dropdown
     
 def set_initial_model():
-    model_folder = Path('extensions/win_tts_piper/model')
+    model_folder = Path('extensions/piper_tts/model')
     available_models = [model.name for model in model_folder.glob('*.onnx')]
 
     load_settings()
@@ -187,7 +187,7 @@ def save_settings():
         json.dump(settings, json_file, indent=4)
     
 def ui():
-    model_folder = Path('extensions/win_tts_piper/model')
+    model_folder = Path('extensions/piper_tts/model')
 
     with gr.Accordion(params["display_name"], open=False):
     
