@@ -1,4 +1,4 @@
-# win_tts_piper
+# piper_tts
 Fast generation voice - piper oobabooga
 
 This project is a Web user interface (WebUI) for text generation using Gradio and a Piper text-to-speech (TTS) model. The main objective is to provide a user-friendly experience for text generation with audio.
@@ -32,18 +32,18 @@ Make sure you install all necessary dependencies and configure your environment 
 1. Clone the repository in the extensions directory.
    
 ```bash 
-git clone https://github.com/tijo95/win_tts_piper.git
+git clone https://github.com/tijo95/piper_tts.git
 ```
 
 
 2. download the following windows piper repository: https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip
 
-Unzip all contents into `win_tts_piper`
+Unzip all contents into `piper_tts`
 
 ![Mon Image](https://drive.google.com/uc?export=view&id=1bO8QyVR7v7gwoLsUdXquTeZx5rEwF7EY)
 
 
-3. Download the .onnx model and their .json files and place them in the repository win_tts_piper `model`.
+3. Download the .onnx model and their .json files and place them in the repository piper_tts `model` directory.
 
     The models are available at this address: https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0
 

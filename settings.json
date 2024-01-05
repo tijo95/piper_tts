@@ -2,8 +2,12 @@
     "active": true,
     "autoplay": true,
     "show_text": true,
-    "selected_model": "fr_FR-upmc-medium.onnx",
+    "ignore_asterisk_text": true,
+    "quiet": false,
+    "selected_model": "en_US-hfc_female-medium.onnx",
+    "speaker_id": 0,
     "noise_scale": 0.66,
     "length_scale": 1,
-    "noise_w": 0.8
+    "noise_w": 0.8,
+    "sentence_silence": 0.2
 }

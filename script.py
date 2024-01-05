@@ -1,19 +1,27 @@
-import subprocess
-import time
-import gradio as gr
-from pathlib import Path
 import json 
-from modules import shared
 import os
 import re
+import subprocess
+import time
 
-settings_file = 'extensions/win_tts_piper/settings.json'
+from modules import shared
+from pathlib import Path
+
+import gradio as gr
+
+
+root_dir = Path(__file__).resolve().parent
+settings_file = root_dir / 'settings.json'
+piper_path = root_dir / 'piper/piper'
+model_folder = root_dir / 'model'
+output_folder = root_dir / 'outputs'
 
 params = {
-    "display_name": "Win tts piper",
+    "display_name": "Piper TTS",
     "active": True,
     "autoplay": True,
     "show_text": True,
+    "ignore_asterisk_text": False,
     "quiet": False,
     "selected_model": "",
     "speaker_id": 0,
@@ -21,8 +29,8 @@ params = {
     "length_scale": 1.0,
     "noise_w": 0.8,
     "sentence_silence": 0.2,
-    "ignore_asterisk_text": False,    
 }
+defaults = params.copy()
 
 def load_settings():
     try:
@@ -32,11 +40,8 @@ def load_settings():
     except FileNotFoundError:
         pass
 
-# Charge les paramètres depuis le fichier JSON au début du script
+# Load parameters from JSON file at start of script
 load_settings()
-
-piper_path = Path('extensions/win_tts_piper/piper/piper.exe')
-output_folder = Path('extensions/win_tts_piper/outputs')
 
 def clean_text(text):
     cleaned_text = text
@@ -58,7 +63,7 @@ def clean_text(text):
     cleaned_text = cleaned_text.replace("***", "*").replace("**", "*")
     cleaned_text = re.sub(r"[\U0001F600-\U0001F64F\U0001F300-\U0001F5FF\U0001F680-\U0001F6FF\U0001F700-\U0001F77F\U0001F780-\U0001F7FF\U0001F800-\U0001F8FF\U0001F900-\U0001F9FF\U0001FA00-\U0001FA6F\U0001FA70-\U0001FAFF\U00002702-\U000027B0\U000024C2-\U0001F251]+", "", cleaned_text)
     
-    # Ignorer le texte entre astérisques si l'option est activée
+    # Ignore text between asterisks if option is enabled
     if params["ignore_asterisk_text"]:
         while '*' in cleaned_text:
             start = cleaned_text.find('*')
@@ -75,7 +80,7 @@ def tts(text, output_file):
     print(f"tts: {cleaned_text} -> {output_file}")
 
     selected_model = params.get('selected_model', '')
-    model_path = Path(f'extensions/win_tts_piper/model/{selected_model}')
+    model_path = model_folder / selected_model
     
     output_file_path = output_folder / output_file
     output_file_str = output_file.as_posix()
@@ -106,7 +111,7 @@ def output_modifier(string, state):
     if string == '':
         string = '*Empty reply, try regenerating*'
     else:
-        output_file = Path(f'extensions/win_tts_piper/outputs/{state["character_menu"]}_{int(time.time())}.wav')
+        output_file = Path(os.path.relpath(output_folder / f'{state["character_menu"]}_{int(time.time())}.wav'))
         tts(string, output_file)
         autoplay = 'autoplay' if params['autoplay'] else ''
         html_string = f'<audio style="height: 30px;" src="file/{output_file.as_posix()}" controls {autoplay}></audio>'
@@ -128,29 +133,27 @@ def history_modifier(history):
     return history
     
 def remove_directory():
-    directory = Path('extensions/win_tts_piper/outputs')
-    for file in directory.glob('*.wav'):
+    for file in output_folder.glob('*.wav'):
         file.unlink()    
 
-def custom_update_selected_model(selected_model, model_folder):
+def custom_update_selected_model(selected_model):
     if selected_model:
         model_path = model_folder / selected_model
         params.update({'selected_model': selected_model, 'model_path': model_path})
 
-def create_model_dropdown(model_folder):
+def create_model_dropdown():
     available_models = [model.name for model in model_folder.glob('*.onnx')]
     
     model_dropdown = gr.Dropdown(choices=available_models, label="Choose Model", value=params["selected_model"])
     
     def update_selected_model(selected_model):
-        custom_update_selected_model(selected_model, model_folder)
+        custom_update_selected_model(selected_model)
 
     model_dropdown.change(update_selected_model, model_dropdown, None)
 
     return model_dropdown
     
 def set_initial_model():
-    model_folder = Path('extensions/win_tts_piper/model')
     available_models = [model.name for model in model_folder.glob('*.onnx')]
 
     load_settings()
@@ -165,7 +168,7 @@ def set_initial_model():
             "show_text": params.get("show_text", True),
         })
 
-# Appelle set_initial_model()
+# Call set_initial_model()
 set_initial_model()
 
 def save_settings():
@@ -187,20 +190,18 @@ def save_settings():
         json.dump(settings, json_file, indent=4)
     
 def ui():
-    model_folder = Path('extensions/win_tts_piper/model')
-
     with gr.Accordion(params["display_name"], open=False):
     
         activate = gr.Checkbox(value=params['active'], label='Active extension')
         autoplay = gr.Checkbox(value=params['autoplay'], label='Play TTS automatically')
         show_text = gr.Checkbox(value=params['show_text'], label='Show message text under audio player')
         ignore_asterisk_checkbox = gr.Checkbox(value=params["ignore_asterisk_text"], label="*Ignore text inside asterisk*")
-        quiet_checkbox = gr.Checkbox(value=False, label='Disable log')
+        quiet_checkbox = gr.Checkbox(value=params["quiet"], label='Disable log')
         
-        noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default (0.66)', value=params['noise_scale'])
-        length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label='Length Scale : Default (1)', value=params['length_scale'])
-        noise_w_slider = gr.Slider(minimum=0.0, maximum=1.0, label='Noise Width : Default (0.8)', value=params['noise_w'])
-        sentence_silence_slider = gr.Slider(minimum=0.0, maximum=1.0, label='Sentence Silence : Default (0.2)', value=params['sentence_silence'])
+        noise_scale_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Scale : Default ({defaults["noise_scale"]})', value=params['noise_scale'])
+        length_scale_slider = gr.Slider(minimum=0.0, maximum=2.0, label=f'Length Scale : Default ({defaults["length_scale"]})', value=params['length_scale'])
+        noise_w_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Noise Width : Default ({defaults["noise_w"]})', value=params['noise_w'])
+        sentence_silence_slider = gr.Slider(minimum=0.0, maximum=1.0, label=f'Sentence Silence : Default ({defaults["sentence_silence"]})', value=params['sentence_silence'])
         
         activate.change(lambda x: params.update({'active': x}), activate, None)
         autoplay.change(lambda x: params.update({'autoplay': x}), autoplay, None)
@@ -213,10 +214,10 @@ def ui():
         noise_w_slider.change(lambda x: params.update({'noise_w': x}), noise_w_slider, None)
         sentence_silence_slider.change(lambda x: params.update({'sentence_silence': x}), sentence_silence_slider, None)
         
-        # Utilise params["selected_model"] comme valeur initiale du menu déroulant
-        model_dropdown = create_model_dropdown(model_folder)
+        # Use params["selected_model"] as initial drop-down value
+        model_dropdown = create_model_dropdown()
         
-        speaker_id_input = gr.Number(value=params["speaker_id"], label="Speaker ID : Default (0) See the model JSON file to find out which ID are available for the selected model.")
+        speaker_id_input = gr.Number(value=params["speaker_id"], label=f'Speaker ID : Default ({defaults["speaker_id"]}) See the model JSON file to find out which ID are available for the selected model.')
         speaker_id_input.change(lambda x: params.update({'speaker_id': int(x)}), speaker_id_input, None)
         
         with gr.Row():    
