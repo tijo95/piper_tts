@@ -1,5 +1,5 @@
 # piper_tts
-Fast generation voice - piper oobabooga
+An extension for the [text-generation-webui by oobabooga](https://github.com/oobabooga/text-generation-webui) that uses [Piper](https://github.com/rhasspy/piper) for fast voice generation.
 
 This project is a Web user interface (WebUI) for text generation using Gradio and a Piper text-to-speech (TTS) model. The main objective is to provide a user-friendly experience for text generation with audio.
 
@@ -36,14 +36,22 @@ git clone https://github.com/tijo95/piper_tts.git
 ```
 
 
-2. download the following windows piper repository: https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip
+2. download the appropriate binay for your platform from piper repository:
 
+For windows download `https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip`
 Unzip all contents into `piper_tts`
 
 ![Mon Image](https://drive.google.com/uc?export=view&id=1bO8QyVR7v7gwoLsUdXquTeZx5rEwF7EY)
 
+For linux:
+```bash
+cd piper_tts/
+wget https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_linux_x86_64.tar.gz
+tar -xvf piper_linux_x86_64.tar.gz
+rm piper_linux_x86_64.tar.gz 
+```
 
-3. Download the .onnx model and their .json files and place them in the repository piper_tts `model` directory.
+3. Download the .onnx model and their .json files and place them in the `piper_tts/model` directory.
 
     The models are available at this address: https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0
 
