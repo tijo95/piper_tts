@@ -38,7 +38,7 @@ git clone https://github.com/tijo95/piper_tts.git
 
 2. download the appropriate binay for your platform from piper repository:
 
-For windows download `https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip`
+For windows, download `https://github.com/rhasspy/piper/releases/download/2023.11.14-2/piper_windows_amd64.zip`
 Unzip all contents into `piper_tts`
 
 ![Mon Image](https://drive.google.com/uc?export=view&id=1bO8QyVR7v7gwoLsUdXquTeZx5rEwF7EY)
