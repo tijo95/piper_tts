@@ -143,6 +143,7 @@ def custom_update_selected_model(selected_model):
 
 def create_model_dropdown():
     available_models = [model.name for model in model_folder.glob('*.onnx')]
+    available_models.sort()
     
     model_dropdown = gr.Dropdown(choices=available_models, label="Choose Model", value=params["selected_model"])
     
