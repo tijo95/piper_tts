@@ -81,6 +81,7 @@ def tts(text, output_file):
 
     selected_model = params.get('selected_model', '')
     model_path = model_folder / selected_model
+    config_path = model_folder/ f'{selected_model}.json'
     
     output_file_path = output_folder / output_file
     output_file_str = output_file.as_posix()
@@ -94,6 +95,7 @@ def tts(text, output_file):
             '--noise_w', str(params['noise_w']),
             '--speaker', str(params['speaker_id']),
             '--model', model_path.as_posix(),
+            '--config', config_path.as_posix(),
             '--output_file', output_file_str,
             '--quiet' if params['quiet'] else '',
         ],
